@@ -19,6 +19,7 @@ class OneMatch {
 	protected MyDate date;// 比赛时间
 	protected int firstTeamSocre;// 第一支球队得分
 	protected int secondTeamScore;// 第二支球队得分
+	protected String quarterPoint;
 	protected boolean isDataCorrect;// 判断数据是否为脏数据
 	protected ArrayList<PlayerPerformOfOneMatch> listOfFirstTeamPlayerPerformance;// 第一支球队每个队员各项成绩
 	protected ArrayList<PlayerPerformOfOneMatch> listOfSecondTeamPlayerPerformance;// 第二支球每个球员各项成绩
@@ -33,7 +34,7 @@ class OneMatch {
 			BufferedReader matchReader = new BufferedReader(new FileReader(PathOfFile.MATCH_INFO + nameOfFile));
 			String temp;
 			String mainInfo = matchReader.readLine();
-			matchReader.readLine();
+			this.quarterPoint = matchReader.readLine();
 			this.getMainInfoOfMatch(mainInfo);// 得到比赛的主要信息，包括得分,时间
 			this.firstTeam = matchReader.readLine().trim();// 初始化第一个队名
 
@@ -98,26 +99,26 @@ class OneMatch {
 	private PlayerPerformOfOneMatch getFirstTeamFirstPlayerPo(String temp) {
 		PlayerPerformOfOneMatch resultPo = new PlayerPerformOfOneMatch();
 		String part[] = temp.split(";");
-		resultPo.setTeamNameForShort(firstTeam);
+		resultPo.setTeamName(firstTeam);
 		resultPo.setDate(date);
 		resultPo.setStart(1);
-		resultPo.setNameOfPlayer(part[0]);
-		resultPo.setPlayingTime(new MyTime(part[2]));
-		resultPo.setTotalHitNumber(this.toInt(part[3]));
-		resultPo.setTotalShootNumber(this.toInt(part[4]));
-		resultPo.setThreePointHitNumber(this.toInt(part[5]));
-		resultPo.setThreePointShootNumber(this.toInt(part[6]));
-		resultPo.setFreePointHitNumber(this.toInt(part[7]));
-		resultPo.setFreePointShootNumber(this.toInt(part[8]));
-		resultPo.setOffensiveReboundNumber(this.toInt(part[9]));
-		resultPo.setDefensiveReboundNumber(this.toInt(part[10]));
-		resultPo.setTotalReboundNumber(this.toInt(part[11]));
-		resultPo.setAssistNumber(this.toInt(part[12]));
-		resultPo.setStealNumber(this.toInt(part[13]));
-		resultPo.setBlockNumber(this.toInt(part[14]));
-		resultPo.setFaultNumber(this.toInt(part[15]));
-		resultPo.setFoulNumber(this.toInt(part[16]));
-		resultPo.setScoreNumber(this.toInt(part[17]));
+		resultPo.setName(part[0]);
+		resultPo.setMinute(new MyTime(part[2]));
+		resultPo.setTotalHit(this.toInt(part[3]));
+		resultPo.setTotalShot(this.toInt(part[4]));
+		resultPo.setThreeHit(this.toInt(part[5]));
+		resultPo.setThreeShot(this.toInt(part[6]));
+		resultPo.setFreeHit(this.toInt(part[7]));
+		resultPo.setFreeShot(this.toInt(part[8]));
+		resultPo.setOffendRebound(this.toInt(part[9]));
+		resultPo.setDefendRebound(this.toInt(part[10]));
+		resultPo.setRebound(this.toInt(part[11]));
+		resultPo.setAssist(this.toInt(part[12]));
+		resultPo.setSteal(this.toInt(part[13]));
+		resultPo.setBlockShot(this.toInt(part[14]));
+		resultPo.setFault(this.toInt(part[15]));
+		resultPo.setFoul(this.toInt(part[16]));
+		resultPo.setPoint(this.toInt(part[17]));
 		return resultPo;
 	}// 第一队首发
 
@@ -129,18 +130,18 @@ class OneMatch {
 
 	private PlayerPerformOfOneMatch getSecondTeamFirstPlayerPo(String temp) {
 		PlayerPerformOfOneMatch resultPo = this.getFirstTeamFirstPlayerPo(temp);
-		resultPo.setTeamNameForShort(secondTeam);
+		resultPo.setTeamName(secondTeam);
 		return resultPo;
 	}// 第二队首发
 
 	private PlayerPerformOfOneMatch getSecondTeamReplacePlayerPo(String temp) {
 		PlayerPerformOfOneMatch resultPo = this.getFirstTeamFirstPlayerPo(temp);
-		resultPo.setTeamNameForShort(secondTeam);
+		resultPo.setTeamName(secondTeam);
 		resultPo.setStart(0);
 		return resultPo;
 	}// 第二队替补
 
-	private int toInt(String str) {
+	protected int toInt(String str) {
 		try {
 			return Integer.parseInt(str);
 		} catch (NumberFormatException e) {
