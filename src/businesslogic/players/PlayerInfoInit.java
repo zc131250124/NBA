@@ -98,7 +98,7 @@ public class PlayerInfoInit {
 				assistNumber += tempMatch.getAssist();
 				playingTime += tempMatch.getMinute();
 				stealNumber += tempMatch.getSteal();
-				blockShotNumber += tempMatch.getBlock();
+				blockShotNumber += tempMatch.getBlockShot();
 				faultNumber += tempMatch.getFault();
 				foulNumber += tempMatch.getFoul();
 				point += tempMatch.getPoint();
@@ -136,7 +136,7 @@ public class PlayerInfoInit {
 				if (tempMatch.getAssist() >= 9.9) {
 					doubleOfOneMatch++;
 				}
-				if (tempMatch.getBlock() >= 9.9) {
+				if (tempMatch.getBlockShot() >= 9.9) {
 					doubleOfOneMatch++;
 				}
 				if (tempMatch.getSteal() >= 9.9) {
@@ -145,7 +145,7 @@ public class PlayerInfoInit {
 				if (doubleOfOneMatch >= 2) {
 					doubleTwo++;
 				}
-				else if (doubleOfOneMatch >= 3) {
+				if (doubleOfOneMatch >= 3) {
 					tripleTwo++;
 				}
 			}
@@ -163,7 +163,7 @@ public class PlayerInfoInit {
 			playerNormal.setBlockShot(blockShotNumber);
 			playerNormal.setFoul(foulNumber);
 			playerNormal.setFault(faultNumber);
-			playerNormal.setMinute(playingTime);
+			playerNormal.setMinute(CalculationOfPlayerPerform.cutTail(playingTime));
 			playerNormal.setTotalHit(totalHitNumber);
 			playerNormal.setTotalShot(totalShotNumber);
 			playerNormal.setThreeHit(threePointHitNumber);
