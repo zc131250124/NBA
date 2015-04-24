@@ -4,6 +4,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -36,9 +37,11 @@ import common.statics.Age;
 import common.statics.Command;
 import common.statics.Field;
 import common.statics.League;
+import common.statics.Method;
 import common.statics.MyColor;
 import common.statics.MyFont;
 import common.statics.NUMBER;
+import common.statics.PathOfFile;
 import common.statics.Position;
 
 public class PlayerPanel extends MyPanel {
@@ -54,7 +57,6 @@ public class PlayerPanel extends MyPanel {
 	public PlayerPanel() {
 		this.createObjects();
 		this.setComponentsLocation();
-		this.setComponentsStyle();
 		this.initTable();
 		this.setTableStyle();
 		rangeAndNameTable.addMouseListener(new MouseListener() {
@@ -99,7 +101,10 @@ public class PlayerPanel extends MyPanel {
 	private void fillTable(ArrayList<PlayerNormalInfo_Expand> voList) {
 		for (int i = 0; i < voList.size(); i++) {
 			String performRow[] = voList.get(i).toStringArray();
-			String infoRow[] = { String.valueOf(i + 1), "头像", voList.get(i).getName() };
+			Object infoRow[] = {
+					String.valueOf(i + 1),
+					Method.changeSize(new ImageIcon(PathOfFile.PLAYER_PORTRAIT_IMAGE + voList.get(i).getName() + ".png"), (int) (60 * NUMBER.px),
+							(int) (55 * NUMBER.px)), voList.get(i).getName() };
 			playerTableModel.addRow(performRow);
 			rangeAndNameTableModel.addRow(infoRow);
 		}
@@ -116,7 +121,20 @@ public class PlayerPanel extends MyPanel {
 		playerTableModel = new MyTableModel(PerformanceList);
 		rangeAndNameTableModel = new MyTableModel(rangeAndNamePerformance);
 		playerShowTable = new MyTable(playerTableModel);
-		rangeAndNameTable = new MyTable(rangeAndNameTableModel);
+		rangeAndNameTable = new MyTable(rangeAndNameTableModel) {
+			private static final long serialVersionUID = 1L;
+
+			@SuppressWarnings({ "unchecked", "rawtypes" })
+			public Class getColumnClass(int column) {
+				if (column == 1) {// 要这样定义table，要重写这个方法0，0的意思就是别的格子的类型都跟0,0的一样。
+					return ImageIcon.class;
+				}
+				else {
+					return getValueAt(0, 0).getClass();
+				}
+			}
+
+		};
 		selectionPanel = new SelectionPanel();
 		playerShowPane = new JScrollPane();
 		playerShowPane.getViewport().add(playerShowTable);
@@ -127,9 +145,6 @@ public class PlayerPanel extends MyPanel {
 		playerShowPane.setBounds((int) (NUMBER.px * 50), (int) (NUMBER.px * 100), (int) (NUMBER.FRAME_WIDTH - 100), (int) (NUMBER.px * 600));
 		this.add(selectionPanel);
 		this.add(playerShowPane);
-	}
-
-	private void setComponentsStyle() {
 	}
 
 	private void setTableStyle() {
@@ -236,15 +251,17 @@ public class PlayerPanel extends MyPanel {
 			this.setButton(advancedSelect);
 			this.setButton(searchButton);
 			this.setButton(findButton);
-			playerInput.setBackground(MyColor.LIGHT_BLUE);
+			playerInput.setOpaque(false);
 			playerInput.setForeground(MyColor.MY_WHITE);
 			playerInput.setFont(MyFont.SMALL_BOLD);
+
 		}
 
 		private void setButton(JButton button) {
 			button.setFocusable(false);
 			button.setBorderPainted(false);
-			button.setForeground(MyColor.LIGHT_COLOR);
+			button.setFont(MyFont.SMALLEST_BOLD);
+			button.setForeground(MyColor.MY_WHITE);
 			button.setBackground(MyColor.MIDDLE_COLOR);
 			button.addMouseListener(this);
 		}
@@ -387,7 +404,8 @@ public class PlayerPanel extends MyPanel {
 			advancedSelectionLabel.setBackground(MyColor.MIDDLE_COLOR);
 			advancedSelectionLabel.setForeground(MyColor.MY_WHITE);
 			advancedSelectionLabel.setFont(MyFont.MIDDLE_BOLD);
-			valueInput.setForeground(MyColor.LIGHT_COLOR);
+			valueInput.setOpaque(false);
+			valueInput.setFont(MyFont.SMALLEST_BOLD);
 			addItemButton.setBackground(MyColor.MIDDLE_COLOR);
 			deletButton.setBackground(MyColor.MIDDLE_COLOR);
 			sureButton.setBackground(MyColor.MIDDLE_COLOR);
@@ -412,8 +430,8 @@ public class PlayerPanel extends MyPanel {
 					CombineSelectionCell combineSelectionCells[] = new CombineSelectionCell[hasChooseTable.getRowCount()];
 					for (int i = 0; i < hasChooseTable.getRowCount(); i++) {
 						combineSelectionCells[i] = new CombineSelectionCell();
-						combineSelectionCells[i].setField(changeToSortField(hasChooseTableModel.getValueAt(i, 0)));
-						combineSelectionCells[i].setNumber(Double.parseDouble(hasChooseTableModel.getValueAt(i, 1)));
+						combineSelectionCells[i].setField(changeToSortField((String) hasChooseTableModel.getValueAt(i, 0)));
+						combineSelectionCells[i].setNumber(Double.parseDouble((String) hasChooseTableModel.getValueAt(i, 1)));
 					}
 					clearTable();
 					fillTable(playerInfoBl.getPlayerNormal_avg(combineSelectionCells));
